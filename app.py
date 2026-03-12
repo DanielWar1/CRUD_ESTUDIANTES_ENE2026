@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 
@@ -10,8 +10,13 @@ load_dotenv()
 #crear instancia
 app =  Flask(__name__)
 
-# Configuración de la base de datos PostgreSQL
-app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+# Configuración de base de datos:
+# usa DATABASE_URL cuando existe; si no, usa SQLite local para desarrollo.
+database_url = os.getenv('DATABASE_URL')
+if database_url and database_url.startswith('postgres://'):
+    database_url = database_url.replace('postgres://', 'postgresql://', 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url or 'sqlite:///estudiantes.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -33,9 +38,10 @@ class Estudiante(db.Model):
             'ap_materno': self.ap_materno,
             'semestre': self.semestre,
         }
-    
-    with app.app_context():
-        db.create_all()
+
+
+with app.app_context():
+    db.create_all()
 
 
 #Ruta raiz
@@ -57,7 +63,7 @@ def create_estudiante():
         nombre = request.form['nombre']
         ap_paterno = request.form['ap_paterno']
         ap_materno = request.form['ap_materno']
-        semestre = request.form['semestre']
+        semestre = int(request.form['semestre'])
 
         nvo_estudiante = Estudiante(no_control=no_control, nombre=nombre, ap_paterno=ap_paterno, ap_materno= ap_materno, semestre= semestre)
 
@@ -67,7 +73,7 @@ def create_estudiante():
         return redirect(url_for('index'))
     
     #Aqui sigue si es GET
-    return render_template('create_estudiante.html')
+    return render_template('create_estudiantes.html')
 
 
 #Eliminar estudiante
@@ -83,14 +89,17 @@ def delete_estudiante(no_control):
 @app.route('/estudiantes/update/<string:no_control>', methods=['GET','POST'])
 def update_estudiante(no_control):
     estudiante = Estudiante.query.get(no_control)
+    if not estudiante:
+        return redirect(url_for('index'))
+
     if request.method == 'POST':
         estudiante.nombre = request.form['nombre']
         estudiante.ap_paterno = request.form['ap_paterno']
         estudiante.ap_materno = request.form['ap_materno']
-        estudiante.semestre = request.form['semestre']
+        estudiante.semestre = int(request.form['semestre'])
         db.session.commit()
         return redirect(url_for('index'))
-    return render_template('update_estudiante.html', estudiante=estudiante)
+    return render_template('update_estudiantes.html', estudiante=estudiante)
 
 #Ruta /alumnos
 @app.route('/alumnos')
