@@ -1,38 +1,58 @@
 {% extends 'base.html' %}
 {% block title %}Lista de Estudiantes{% endblock %}
 {% block content %}
-<a href="{{ url_for('create_estudiante') }}" class="btn btn-success mb-3">Agregar Estudiante</a>
-<br>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>No. control</th>
-            <th>Nombre</th>
-            <th>Apellido Paterno</th>
-            <th>Apellido Materno</th>
-            <th>Semestre</th>
-            <th>Acciones</th>
+<div class="is-flex is-justify-content-space-between is-align-items-center is-flex-wrap-wrap gap-3 mb-4 fade-up stagger-1">
+    <div>
+        <h2 class="title is-4 mb-1"><i class="fa-solid fa-users mr-2"></i> Registro de Estudiantes</h2>
+        <p class="has-text-grey">Administra altas, cambios y bajas de manera rapida.</p>
+    </div>
+    <a href="{{ url_for('create_estudiante') }}" class="button is-brand is-medium">
+        <span class="icon"><i class="fa-solid fa-user-plus"></i></span>
+        <span>Nuevo estudiante</span>
+    </a>
+</div>
 
-        </tr>
-    </thead>
-    <tbody>
-        {% for estudiante in estudiantes %}
-        <tr>
-            <td>{{ estudiante.no_control }}</td>
-            <td>{{ estudiante.nombre }}</td>
-            <td>{{ estudiante.ap_paterno }}</td>
-            <td>{{ estudiante.ap_materno }}</td>
-            <td>{{ estudiante.semestre }}</td>
-            <td>
-                <a href="{{ url_for('delete_estudiante', no_control= estudiante.no_control )}}" 
-                class="btn btn-danger">Eliminar</a> 
-                <a href="{{ url_for('update_estudiante', no_control= estudiante.no_control )}}" 
-                class="btn btn-warning">Actualizar</a> 
-            </td> 
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-
+<div class="box fade-up stagger-2">
+    <div class="table-container">
+        <table class="table is-fullwidth is-hoverable">
+            <thead>
+                <tr>
+                    <th>No. Control</th>
+                    <th>Nombre</th>
+                    <th>Apellido Paterno</th>
+                    <th>Apellido Materno</th>
+                    <th>Semestre</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for estudiante in estudiantes %}
+                <tr>
+                    <td><span class="tag is-info is-light">{{ estudiante.no_control }}</span></td>
+                    <td>{{ estudiante.nombre }}</td>
+                    <td>{{ estudiante.ap_paterno }}</td>
+                    <td>{{ estudiante.ap_materno }}</td>
+                    <td><span class="tag is-success is-light">{{ estudiante.semestre }}</span></td>
+                    <td>
+                        <div class="buttons are-small">
+                            <a href="{{ url_for('update_estudiante', no_control=estudiante.no_control) }}" class="button is-warning is-light">
+                                <span class="icon"><i class="fa-solid fa-pen"></i></span>
+                                <span>Actualizar</span>
+                            </a>
+                            <a href="{{ url_for('delete_estudiante', no_control=estudiante.no_control) }}" class="button is-danger is-light">
+                                <span class="icon"><i class="fa-solid fa-trash"></i></span>
+                                <span>Eliminar</span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="has-text-centered has-text-grey">No hay estudiantes registrados todavia.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}
