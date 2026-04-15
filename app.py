@@ -3,15 +3,14 @@ from flask import Flask, request, render_template, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 
-# Cargar variables de entorno desde un archivo .env
+
 load_dotenv()
 
 
 #crear instancia
 app =  Flask(__name__)
 
-# Configuración de base de datos:
-# usa DATABASE_URL cuando existe; si no, usa SQLite local para desarrollo.
+
 database_url = os.getenv('DATABASE_URL')
 if database_url and database_url.startswith('postgres://'):
     database_url = database_url.replace('postgres://', 'postgresql://', 1)
