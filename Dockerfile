@@ -1,17 +1,21 @@
-# Usar una imagen base de python
-FROM python:3.13.2-alpine3.21
+# Usamos alpine como tenías, pero instalamos librerías de postgres
+FROM python:3.11-alpine
 
-# Establecer el directorio de trabajo dentro del contenedor
+# Instalamos dependencias para psycopg2 (necesarias en Alpine)
+RUN apk add --no-cache postgresql-dev gcc python3-dev musl-dev
+
 WORKDIR /app
 
-# Copiar el archivo de requerimientos al contenedor
-COPY . /app
+# Copiamos requerimientos e instalamos
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Instalar las dependencias necesarias
-RUN pip install -r requirements.txt
+# Copiamos el resto del código
+COPY . .
 
-# Exponer el puerto en el que la aplicación se ejecutará
+# Exponemos el puerto
 EXPOSE 5000
 
-# Comando para ejecutar la aplicación
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
+# Comando de arranque (usando gunicorn como tenías en tu imagen)
+# "app:app" significa: archivo app.py, objeto app
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]

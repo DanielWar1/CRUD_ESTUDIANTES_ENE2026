@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  web-estudiantes:
+    # Jenkins actualizará esta imagen automáticamente al hacer el push
+    image: nodensx/jenkins:latest
+    ports:
+      - "80:5000"
+    environment:
+      # Esta variable la inyecta el script de Jenkins durante el deploy
+      - DATABASE_URL=${DATABASE_URL}
+    networks:
+      - red-bd-swarm
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          # La App corre en el manager para gestionar el stack
+          - node.role == manager
+
+networks:
+  red-bd-swarm:
+    external: true
