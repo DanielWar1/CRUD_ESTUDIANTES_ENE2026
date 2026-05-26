@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crud-holamundo-deployment  # <-- El nombre que te pide el profesor
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: crud-holamundo
+  template:
+    metadata:
+      labels:
+        app: crud-holamundo
+    spec:
+      containers:
+        - name: crud-container
+          image: nodensx/holamundotask:latest # <-- Tu imagen de Docker Hub
+          ports:
+            - containerPort: 5000             # <-- El contenedor DEBE quedarse en 5000 porque así está en tu app.py
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: crud-holamundo-service
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5080          # <--- ¡PUERTO CAMBIADO! Este es el puerto público para el navegador
+      targetPort: 5000    # <--- Redirige el tráfico al puerto 5000 interno del contenedor
+  selector:
+    app: crud-holamundo
