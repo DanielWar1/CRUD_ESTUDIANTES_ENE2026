@@ -1,45 +1,45 @@
 {% extends 'base.html' %}
 {% block title %}Lista de Estudiantes {% endblock %}
 {% block content %}
-<div class="is-flex is-justify-content-space-between is-align-items-center is-flex-wrap-wrap gap-3 mb-4 fade-up stagger-1">
+<div class="is-flex is-justify-content-space-between is-align-items-center is-flex-wrap-wrap gap-3 mb-4 fade-up stagger-1" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 2rem; border-radius: 8px;">
     <div>
-        <h2 class="title is-4 mb-1"><i class="fa-solid fa-users mr-2"></i> Registro de Estudiantes lunes 20/04/26 </h2>
-        <p class="has-text-grey">Administra altas, cambios y bajas de manera rapida.</p>
+        <h2 class="title is-4 mb-1" style="color: #ffffff;"><i class="fa-solid fa-users mr-2"></i> Registro de Estudiantes - Kubernetes Test </h2>
+        <p style="color: #f0f0f0;">Administra altas, cambios y bajas de manera rapida.</p>
     </div>
-    <a href="{{ url_for('create_estudiante') }}" class="button is-brand is-medium">
+    <a href="{{ url_for('create_estudiante') }}" class="button is-brand is-medium" style="background-color: #764ba2; color: #ffffff; border: none;">
         <span class="icon"><i class="fa-solid fa-user-plus"></i></span>
         <span>Nuevo estudiante</span>
     </a>
 </div>
 
-<div class="box fade-up stagger-2">
+<div class="box fade-up stagger-2" style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: 1px solid #e0e0e0;">
     <div class="table-container">
         <table class="table is-fullwidth is-hoverable">
-            <thead>
+            <thead style="background-color: #667eea;">
                 <tr>
-                    <th>No. Control</th>
-                    <th>Nombre</th>
-                    <th>Apellido Paterno</th>
-                    <th>Apellido Materno</th>
-                    <th>Semestre</th>
-                    <th>Acciones</th>
+                    <th style="color: #ffffff;">No. Control</th>
+                    <th style="color: #ffffff;">Nombre</th>
+                    <th style="color: #ffffff;">Apellido Paterno</th>
+                    <th style="color: #ffffff;">Apellido Materno</th>
+                    <th style="color: #ffffff;">Semestre</th>
+                    <th style="color: #ffffff;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
                 {% for estudiante in estudiantes %}
-                <tr>
-                    <td><span class="tag is-info is-light">{{ estudiante.no_control }}</span></td>
-                    <td>{{ estudiante.nombre }}</td>
-                    <td>{{ estudiante.ap_paterno }}</td>
-                    <td>{{ estudiante.ap_materno }}</td>
-                    <td><span class="tag is-success is-light">{{ estudiante.semestre }}</span></td>
+                <tr style="border-bottom: 1px solid #e0e0e0; background-color: #f9f9f9;">
+                    <td style="color: #333333;"><span class="tag is-info is-light">{{ estudiante.no_control }}</span></td>
+                    <td style="color: #333333;">{{ estudiante.nombre }}</td>
+                    <td style="color: #333333;">{{ estudiante.ap_paterno }}</td>
+                    <td style="color: #333333;">{{ estudiante.ap_materno }}</td>
+                    <td style="color: #333333;"><span class="tag is-success is-light">{{ estudiante.semestre }}</span></td>
                     <td>
                         <div class="buttons are-small">
-                            <a href="{{ url_for('update_estudiante', no_control=estudiante.no_control) }}" class="button is-warning is-light">
+                            <a href="{{ url_for('update_estudiante', no_control=estudiante.no_control) }}" class="button is-warning is-light" style="color: #333333;">
                                 <span class="icon"><i class="fa-solid fa-pen"></i></span>
                                 <span>Actualizar</span>
                             </a>
-                            <a href="{{ url_for('delete_estudiante', no_control=estudiante.no_control) }}" class="button is-danger is-light">
+                            <a href="{{ url_for('delete_estudiante', no_control=estudiante.no_control) }}" class="button is-danger is-light" style="color: #333333;">
                                 <span class="icon"><i class="fa-solid fa-trash"></i></span>
                                 <span>Eliminar</span>
                             </a>
@@ -48,7 +48,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="6" class="has-text-centered has-text-grey">No hay estudiantes registrados todavia.</td>
+                    <td colspan="6" class="has-text-centered" style="color: #666666;">No hay estudiantes registrados todavia.</td>
                 </tr>
                 {% endfor %}
             </tbody>
