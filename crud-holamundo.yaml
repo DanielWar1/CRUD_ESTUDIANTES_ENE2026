@@ -1,32 +1,72 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: crud-holamundo-deployment  # <-- El nombre que te pide el profesor
+  name: postgres-db
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: crud-holamundo
+      app: postgres-db
   template:
     metadata:
       labels:
-        app: crud-holamundo
+        app: postgres-db
     spec:
       containers:
-        - name: crud-container
-          image: nodensx/holamundotask:latest # <-- Tu imagen de Docker Hub
-          ports:
-            - containerPort: 5000             # <-- El contenedor DEBE quedarse en 5000 porque así está en tu app.py
+      - name: postgres
+        image: postgres:15
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "contrasena_secreta_swarm"
+        - name: POSTGRES_DB
+          value: "estudiantes_db"
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: crud-holamundo-service
+  name: base-de-datos-pg
+spec:
+  ports:
+  - port: 5432
+  selector:
+    app: postgres-db
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crud-estudiantes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crud-estudiantes
+  template:
+    metadata:
+      labels:
+        app: crud-estudiantes
+    spec:
+      containers:
+      - name: crud-app
+        image: nodensx/jenkins:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5000
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://postgres:contrasena_secreta_swarm@base-de-datos-pg:5432/estudiantes_db"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crud-service
 spec:
   type: LoadBalancer
   ports:
-    - port: 5080          # <--- ¡PUERTO CAMBIADO! Este es el puerto público para el navegador
-      targetPort: 5000    # <--- Redirige el tráfico al puerto 5000 interno del contenedor
+  - port: 80           # El puerto por el que va a escuchar el LoadBalancer hacia afuera
+    targetPort: 5000   # El puerto interno de tu app Flask
   selector:
-    app: crud-holamundo
+    app: crud-estudiantes
